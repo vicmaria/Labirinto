@@ -90,25 +90,29 @@ void Divide(char M[][MAX], int direcao, int imin, int imax, int jmin, int jmax, 
 	
 	if(cond != PAREDE)
 	{
+		printf("entrou");
 		if(direcao == 1) //horizontal
 		{
-	        while(((i%2) == 1) | (i == 0) | i == imax | i > imax)
+	        while(((i%2) == 1) || (i == 0) || i == imax || i > imax)
 				i = rand()%(imax) + imin;
 	
 			for(j = jmin ; j < jmax; j++)
 	  			M[i][j] = PAREDE;
 	  
 		
-			while((j%2 != 1) | j == 0 | j == jmax | j > jmax)
+			while((j%2 != 1) || j == 0 || j == jmax || j > jmax)
 				j = rand()%(jmax) + jmin;
 				
 	  			M[i][j] = FUNDO;
 	  			
+	  			printf("\ni = %d", i);
 	 				cond = M[i - 2][j];
+	 				printf("\ncim%d", cond);
 	 				if(cond != PAREDE)
 	 				Divide(M, (direcao + 1), imin, i, jmin, jmax, cond); //pra cima
 	 			
 	 				cond = M[i + 2][j];
+	 				printf("\nbai%d", cond);
 	 				if(cond != PAREDE)
 	 				Divide(M, (direcao + 1), i, imax, jmin, jmax, cond); //pra baixo
 
@@ -117,26 +121,28 @@ void Divide(char M[][MAX], int direcao, int imin, int imax, int jmin, int jmax, 
 		if(direcao == 2) //vertical
 		{
 	
-			while((j%2 == 1) | j <= jmin | j == jmax | j > jmax)
+			while((j%2 == 1) || j <= jmin || j == jmax || j > jmax)
 				j = rand()%(jmax) + jmin;
 				
 				for(i = imin; i <= imax; i++)
 	 				M[i][j] = PAREDE;
 
-				while((i%2 != 1) | i == 0 | i == imax | i > imax)
+				while((i%2 != 1) || i == 0 || i == imax || i > imax)
 					i = rand()%(imax) + imin;
 					
 	 			M[i][j] = FUNDO;
 	 			
-	 			i = (imin + imax)/2;
-	 			
+	 				printf("\nj = %d", j);
 	 				cond = M[i][j - 2];
-	 				if(cond != PAREDE)
-	 				Divide(M, (direcao - 1), imin, imax, jmin, j, cond); //esquerda
-	 			
+	 				
+	 				printf("\n esq%i", cond);
+//	 				if(cond != PAREDE)
+//	 				Divide(M, (direcao - 1), imin, imax, jmin, j, cond); //esquerda
+//	 			
 	 				cond = M[i][j + 2];
-	 				if(cond != PAREDE)
-	 				Divide(M, (direcao - 1), imin, imax, j, jmax, cond); //direita
+	 				printf("\ndire%i", cond);
+//	 				if(cond != PAREDE)
+//	 				Divide(M, (direcao - 1), imin, imax, j, jmax, cond); //direita
 		}
 		return;
 	}
@@ -153,18 +159,25 @@ void CriaLab(char M[][MAX])
 	//A PORTA DEVE SER SEMPRE PAR
 	
 	j = rand()%(MAX - 1) + 1;
-	while((j%2 == 1) | j == 0 | j == MAX )
+	while((j%2 == 1) || j == 0 || j == MAX )
 	 j = rand()%(MAX - 1) + 1;
 	
 	for(i = 1; i < MAX; i++)
 	 M[i][j] = PAREDE;
+	
+	i=0;
 	 
 	while((i%2) != 1) 
 	i = rand()%(MAX - 3) + 1;
+	
 	M[i][j] = FUNDO;
 
+	printf("1");
 	Divide(M, 1, 0, (MAX - 1), 0, j, (M[i][j] - 2)); //esquerda
+	printf("\n2");
 	Divide(M, 1, 0, (MAX - 1), j, (MAX - 1), (M[i][j] + 2));  //direita
+	
+	return;
 	
 }
 
