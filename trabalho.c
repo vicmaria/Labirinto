@@ -2,6 +2,7 @@
 #include <stdlib.h> 
 #include<time.h>
 #define MAX 41
+#define TAM 100
 #define FUNDO 0
 #define PAREDE 1
 #define PORTA 2
@@ -32,7 +33,7 @@ void zerosMatriz(char M[][MAX])
 }
 
 
-void salvaMatriz(char M[][MAX])
+void salvaMatriz(char M[][MAX], int n)
 {
 	int i, j;
 	FILE *arq;
@@ -88,69 +89,88 @@ void Divide(char M[][MAX], int direcao, int imin, int imax, int jmin, int jmax, 
 {
 	int i = 0, j = 0;
 	
-	if(cond != PAREDE)
-	{
+	
 		if(direcao == 1) //horizontal
 		{
-	        while(((i%2) == 1) || (i == 0) || i == imax || i > imax)
-				i = rand()%(imax) + imin;
+			if(((imax - imin) >> 2) && ((jmax - jmin) >> 2))
+			{
+				if(cond != PAREDE)
+	        {
+	        
+	        	while(((i%2) == 1) || (i == 0) || i <= imin || i >= imax)
+	        		i = rand()%(imax - imin) + imin;
 	
 			for(j = jmin ; j < jmax; j++)
 	  			M[i][j] = PAREDE;
 	  
-			j = 0;
-			while((j%2 != 1) || j == 0 || j == jmax || j > jmax)
-				j = rand()%(jmax) + jmin;
-				
+		
+			while((j%2 == 0) || j == 0 || j <= jmin || j >= jmax)
+				j = rand()%(jmax - jmin) + jmin;
+
 	  			M[i][j] = FUNDO;
 	  			
-	 				cond = M[i - 2][j];
+
 	 				if(cond != PAREDE)
 	 				Divide(M, (direcao + 1), imin, i, jmin, jmax, cond); //pra cima
-	 			
-	 				cond = M[i + 2][j];
+
 	 				if(cond != PAREDE)
 	 				Divide(M, (direcao + 1), i, imax, jmin, jmax, cond); //pra baixo
-
+			}
+			else
+			 return;
+			}
+			else
+			 return;
 	  			
 		}
 		if(direcao == 2) //vertical
 		{
-	
-			while((j%2 == 1) || j <= jmin || j == jmax || j > jmax)
-				j = rand()%(jmax) + jmin;
+			if(((imax - imin) >> 2) && ((jmax - jmin) >> 2))
+			{
+				if(cond != PAREDE)
+			{
+				while((j%2 != 0) || j == 0 || j <= jmin || j >= jmax)
+						j = rand()%(jmax - jmin) + jmin;
 				
 				for(i = imin; i <= imax; i++)
 	 				M[i][j] = PAREDE;
-	 				
-				i = 0;
-				while((i%2 != 1) || i == 0 || i == imax || i > imax)
-					i = rand()%(imax) + imin;
-					
+
+				while((i%2 != 1) || i == 0 || i <= imin || i >= imax)
+				{
+					i = rand()%(imax - imin) + imin ;
+
+				}
+	
 	 			M[i][j] = FUNDO;
 	 			
 	 			
-	 				cond = M[i][j - 2];
-//	 				if(cond != PAREDE)
-//	 				Divide(M, (direcao - 1), imin, imax, jmin, j, cond); //esquerda
+	 			cond = M[i][j - 2];
+	 				if(cond != PAREDE)
+	 				Divide(M, (direcao - 1), imin, imax, jmin, j, cond); //esquerda
 //	 			
-//	 				cond = M[i][j + 2];
-//	 				if(cond != PAREDE)
-//	 				Divide(M, (direcao - 1), imin, imax, j, jmax, cond); //direita
+						
+				cond = M[i][j + 2];
+	 				cond = M[i][j + 2];
+	 				if(cond != PAREDE)
+	 				Divide(M, (direcao - 1), imin, imax, j, jmax, cond); //direita
+			}
+			else
+			return;
+	
+			}
+			else
+			 return;
+		
+		
 		}
 		return;
-	}
-	else
-	 return;
+	
+
 }
 void CriaLab(char M[][MAX])
 {
 	int i, j, jmax;
 	
-	//J E I SÃO SEMPRE PAR então parede em todas as pares e porta aleatória
-	
-	//FALTA POR O WHILE DE PAR E IMPAR NESSA FUNÇÃO 
-	//A PORTA DEVE SER SEMPRE PAR
 	
 	j = rand()%(MAX - 1) + 1;
 	while((j%2 == 1) || j == 0 || j == MAX )
@@ -159,14 +179,16 @@ void CriaLab(char M[][MAX])
 	for(i = 1; i < MAX; i++)
 	 M[i][j] = PAREDE;
 	 
-	 i=0;
-	while((i%2) != 1) 
-	i = rand()%(MAX - 3) + 1;
+	i = 2;
+	
+	while((i%2 != 1) || i == 0 || i <= 3 || i >= MAX)
+		i = rand()%(MAX - 3) + 3 ;
+
 	
 	M[i][j] = FUNDO;
 
-	Divide(M, 1, 0, (MAX - 1), 0, j, (M[i][j] - 2)); //esquerda
-	Divide(M, 1, 0, (MAX - 1), j, (MAX - 1), (M[i][j] + 2));  //direita
+	Divide(M, 1, 0, (MAX - 1), 0, j, (M[i][j - 2])); //esquerda
+	Divide(M, 1, 0, (MAX - 1), j, (MAX - 1), (M[i][j + 2]));  //direita
 	
 }
 
@@ -174,12 +196,42 @@ void CriaLab(char M[][MAX])
 int main ()
 {
 	srand(time(0));
-	char M[MAX][MAX];
+	char M[MAX][MAX], op;
+	int n = 0 ;
 	
+
+	do
+	{
+		system("cls");
+		printf("[1] - Gerar labirinto\n");
+		printf("[2] - Gerar solucao do labirinto atual\n");
+		printf("[3] - Apagar todos os labirintos\n");
+		printf("[4] - Sair do programa\n");
+		printf("--------------------------------------------\nLabirintos gerados: %d\n", n);
+		printf("--------------------------------------------\nOpcao: ");
+		fflush(stdin);  //limpar buffer do teclado
+		op = getchar();                                 //getche( ); //é o getch que mostra na tela o que colocou e pega só um caracter
+		
+		switch(op)
+		{
+			case '1':
+				zerosMatriz(M);
+				CriaLab(M);
+				n++;
+				salvaMatriz(M, n);
+				break;
+			case'2':
+				
+				break;
+			case '3':
+			
+				break;
+			
+		}
+		
+	}while(op != '4');
 	
-	zerosMatriz(M);
-	CriaLab(M);
-	salvaMatriz(M);
+
 	
 	
 	return 0;
