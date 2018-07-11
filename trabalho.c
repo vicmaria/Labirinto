@@ -48,7 +48,7 @@ void salvaMatriz(char M[][MAX])
 				switch(M[i][j])
 				{
 					case FUNDO:
-						fprintf(arq,"255 255 255 "); //espaÁo em branco no final pra n„o emendar os elementos
+						fprintf(arq,"255 255 255 "); //espa√ßo em branco no final pra n√£o emendar os elementos
 						break;
 					case PAREDE:
 						fprintf(arq," 34 139  34 ");
@@ -73,7 +73,7 @@ void Solucao(char M[][MAX])
 {
 	int i = 0, j = 0;
 	
-	while(M[i][j] != PORTA)  //acha o comeÁo
+	while(M[i][j] != PORTA)  //acha o come√ßo
 	 j++;
 	i++;
 	
@@ -84,7 +84,7 @@ void Solucao(char M[][MAX])
 		}  
 	
 }
-void Divide(char M[][MAX], int direcao, int imin, int imax, int jmin, int jmax, int cond)
+void Divide(char M[][MAX], int direcao, int imin, int imax, int jmin, int jmax, char cond)
 {
 	int i = 0, j = 0;
 	
@@ -104,7 +104,6 @@ void Divide(char M[][MAX], int direcao, int imin, int imax, int jmin, int jmax, 
 				
 	  			M[i][j] = FUNDO;
 	  			
-				j = (jmin + jmax)/2;
 	 				cond = M[i - 2][j];
 	 				if(cond != PAREDE)
 	 				Divide(M, (direcao + 1), imin, i, jmin, jmax, cond); //pra cima
@@ -148,9 +147,9 @@ void CriaLab(char M[][MAX])
 {
 	int i, j, jmax;
 	
-	//J E I S√O SEMPRE PAR ent„o parede em todas as pares e porta aleatÛria
+	//J E I S√ÉO SEMPRE PAR ent√£o parede em todas as pares e porta aleat√≥ria
 	
-	//FALTA POR O WHILE DE PAR E IMPAR NESSA FUN«√O 
+	//FALTA POR O WHILE DE PAR E IMPAR NESSA FUN√á√ÉO 
 	//A PORTA DEVE SER SEMPRE PAR
 	
 	j = rand()%(MAX - 1) + 1;
